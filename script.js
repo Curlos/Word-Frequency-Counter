@@ -1,18 +1,23 @@
-let words = [
-    {count: 3715, word: ''},
-    {count: 2220, word: 'the'},
-    {count: 1140, word: 'a'},
-    {count: 780, word: 'of'},
-    {count: 520, word: 'and'}
-]
-
 let wordCountsMap = new Map()
 
 document.getElementById('count-words').addEventListener('click', () => {
-    let wordStr = document.getElementById('words-input').value.split(' ')
+    let wordStr = document.getElementById('words-input').value.split(' ').filter((word) => word != '' && word != '\n');
+    
+    if(wordStr.length == 0) {
+        displayErrorMessage();
+        return;
+    }
+
+    let errorDiv = document.getElementById('error');
+    errorDiv.style.display = "None";
+
+    if(document.getElementById("word-frequency-table")) {
+        document.getElementById("word-frequency-table").remove();
+    }
+ 
 
     wordStr.map((word) => {
-        let newWord = word.replace('\n', '').toLowerCase()
+        let newWord = word.toLowerCase()
         wordCount = wordCountsMap[newWord]
 
         wordCountsMap[newWord] = wordCount ? wordCount + 1 : 1;
@@ -31,13 +36,28 @@ document.getElementById('count-words').addEventListener('click', () => {
         return (b.count > a.count) ? 1 : ((a.count > b.count) ? -1 : 0)
     });
 
-    console.log(sortedWordCount)
-
-    let table = document.querySelector("table");
+    let table = document.createElement("table");
+    table.setAttribute("id", "word-frequency-table")
+    generateTableHead(table, sortedWordCount[0]);
     generateTable(table, sortedWordCount);
+
+    document.body.appendChild(table);
 })
 
+const generateTableHead = (table, data) => {
+    let thead = table.createTHead();
+    let row = thead.insertRow();
+    let theads = ['Rank', ...Object.keys(data)];
+    console.log(Object.keys(data))
 
+    theads.map((key => {
+        let titleCaseKey = key.charAt(0).toUpperCase() + key.slice(1)
+        let th = document.createElement("th");
+        let text = document.createTextNode(titleCaseKey);
+        th.appendChild(text);
+        row.appendChild(th);
+    }));
+}
 
 const generateTable = (table, wordCounts) => {
     rankNum = 1
@@ -53,4 +73,11 @@ const generateTable = (table, wordCounts) => {
 
         rankNum++;
     })
+}
+
+const displayErrorMessage = () => {
+    let errorDiv = document.getElementById('error');
+    errorDiv.style.display = "block";
+
+    console.log('error')
 }

@@ -39,3 +39,13 @@ tr {
 th {
     background-color: #1ED760;
 }
+
+#error {
+    border: 2px solid red;
+    background-color: #edbebe;
+    border-radius: 15px;
+    color: red;
+    font-size: xx-large;
+    padding: 20px;
+    display: None;
+}
